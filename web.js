@@ -198,9 +198,16 @@
                 })
             contract = new web3.eth.Contract(abi, address);
             contract.methods.reveal_winner().call().then(function (winning_candidate) {
-                $('#winner').html(winning_candidate);
+               
+                contract.methods.getcandidates().call().then(function(result){
+                    var names = result.map(can=>can.candidate_name);
+                    var c = winning_candidate+":"+names[winning_candidate]
+                    $('#winner').html(c);
+    
+                })
             }
             )
+            
 
             /*$('#register').click(function () {
                 var address = $('#reg').val();
