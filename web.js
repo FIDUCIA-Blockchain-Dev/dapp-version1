@@ -3,7 +3,7 @@
         $(document).ready(function () {
             var account;
             web3 = new Web3(web3.currentProvider);
-            var address = "0x4F6033b7AA25de5BD7F4D2903474c7a4f5422246";
+            var address = "0x830849B0cB9b00913192194339f271Abd982C026";
             var abi = [
                 {
                     "inputs": [
@@ -202,7 +202,7 @@
             }
             )
 
-            $('#register').click(function () {
+            /*$('#register').click(function () {
                 var address = $('#reg').val();
                 const a = web3.utils.toChecksumAddress(address);
                 web3.eth.getAccounts().then(function(accounts){
@@ -211,8 +211,19 @@
                 })
 
             }
-
-            )
+            
+            )*/
+            const registerForm = document.getElementById('register-form');
+            registerForm.addEventListener('submit', async (event) => {
+              event.preventDefault();
+              const voterAddress = document.getElementById('voter-address').value;
+              const accounts = await web3.eth.getAccounts();
+              const result = await contract.methods.register(voterAddress).send({ from: accounts[0] });
+              contract.once('receipt', (receipt) => {
+                console.log(receipt);
+                // Update the HTML page to reflect the success or failure of the transaction
+              });
+            });
             $('#vote').click(function () {
                 web3.eth.getAccounts().then(function(accounts){
                     var voteno = parseInt($('#inp').val());
@@ -222,7 +233,7 @@
                     
             })
             $('#v').click(function(){
-                
+                console.log("hi");
                contract.methods.candidatescount().call().then(function(candidatescount){
                 contract.methods.getcandidates().call().then(function(result){
                 
@@ -230,7 +241,7 @@
                     var namelist = $('#candidates-list');
                     namelist.empty();
                     for(var i=0;i<candidatescount;i++)
-                    {   var n = names[i] + "<br>";
+                    {   var n = names[i] +":"+i+ "<br>";
                         namelist.append(n);
 
                     }

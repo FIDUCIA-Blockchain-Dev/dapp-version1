@@ -39,7 +39,7 @@
       <div class="container" id="mydiv">
         <div class="row">
             <div class="col-lg-12">
-                
+                    <p>Enter corresponding number of the candidate you want to vote:</p>
                     <input type="text" id="inp">
     <button id="vote" class="btn btn-primary btn-center">vote</button><br><br>
     <button id="v" class="btn btn-primary btn-center">View Candidates</button><br><br>
@@ -52,5 +52,33 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
       <script src="./web.js"></script>
+      <script>
+           $('#v').click(function(){
+                console.log("hi");
+               contract.methods.candidatescount().call().then(function(candidatescount){
+                contract.methods.getcandidates().call().then(function(result){
+                
+                    var names = result.map(can=>can.candidate_name);
+                    var namelist = $('#candidates-list');
+                    namelist.empty();
+                    for(var i=0;i<candidatescount;i++)
+                    {   var n = names[i] +":"+i+ "<br>";
+                        namelist.append(n);
+
+                    }
+                   })
+               })
+                
+            })
+            $('#vote').click(function () {
+              console.log("hi vote");
+                web3.eth.getAccounts().then(function(accounts){
+                    var voteno = parseInt($('#inp').val());
+                    const currentAccount = web3.eth.defaultAccount || accounts[0];
+                    contract.methods.voting_process(voteno).send({from:currentAccount});
+                })
+                    
+            })
+      </script>
   </body>
 </html>
